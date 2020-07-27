@@ -14,6 +14,9 @@
         -   [List Slicing](#listslicing)
         -   [List Methods](#listmethods)
         -   [List Unpacking](#listunpacking)
+    -   [Dictionary](#dictionary)
+    -   [Tuples](#tuples)
+    -   [Sets](#sets)
     -   [xxxxxxx](#xxxxxxxx)
 
 <h1 id='basics'>Basics</h1>
@@ -165,7 +168,7 @@
 
 [Go Back to Summary](#summary)
 
--   `Lists` are like `Arrays` in other languages
+-   **Lists** are like **Arrays** in other languages, it's an ordered list
 
 <h3 id='listslicing'>List Slicing</h3>
 
@@ -368,4 +371,228 @@
       # 3
       # [4, 5, 6, 7, 8]
       # 9
+    ```
+
+<h2 id='dictionary'>Dictionary</h2>
+
+[Go Back to Summary](#summary)
+
+-   **Dictionary** is equal to an **object** in `JavaScript`, it's un-ordered key/value pairs
+
+    ```Python
+      dictionary = {
+        'a': 1,
+        'b': 2
+      }
+
+      print(dictionary['a'])
+      # 1
+    ```
+
+-   the `.get()` method accepts the first argument is the `key` that we are looking for, if not found we can assign a default value (second argument).
+
+    ```Python
+      user = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+      }
+
+      print(user.get('age',55))
+      # 55
+
+      user2 = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+          'age' : 20
+      }
+
+      print(user.get('age',55))
+      # 20
+    ```
+
+-   `<value> in dict.key()`, loops through the dictionary and checks if the **key** exists
+
+    ```Python
+      user = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+          'age': 20
+      }
+
+      print('hello' in user.keys())
+      # false
+      print('greet' in user.keys())
+      # true
+    ```
+
+-   `<value> in dict.value()`, loops through the dictionary and checks if the **value** exists
+
+    ```Python
+      user = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+          'age': 20
+      }
+
+      print('hello' in user.values())
+      # true
+    ```
+
+-   `dict.items()`, returns an array of **tuples** where the fist position (`[0]`) is the **key** and the second position (`[1]`) is the **value** (the value could be anything, number, string, object...)
+
+    ```Python
+      user = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+          'age': 20
+      }
+
+      print(user.items())
+      # dict_items([('basket', [1, 2, 3]), ('greet', 'hello'), ('age', 20)])
+    ```
+
+-   `.clear()`, clear the object in place, it removes all the items of the object. In the end we have and **empty** object
+
+-   `.copy()` creates a brand new copy of the object (not referencing the pointer, it creates a new object)
+
+-   `.pop()` removes the target item and returns the removed item.
+
+-   `.update()` updates an existing item or adds if not exist
+
+    ```Python
+      user = {
+          'basket': [1, 2, 3],
+          'greet': 'hello',
+          'age': 20
+      }
+
+      user.update({'age': 55})
+      print(user)
+
+      user.update({'ages': 100})
+      print(user)
+      # {'basket': [1, 2, 3], 'greet': 'hello', 'age': 55}
+      # {'basket': [1, 2, 3], 'greet': 'hello', 'age': 55, 'ages': 100}
+    ```
+
+<h2 id='tuples'>Tuples</h2>
+
+[Go Back to Summary](#summary)
+
+-   it's just like a list but we cannot change the content
+
+    ```Python
+      days_of_the_week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
+      shopping_cart = ['cucumbers', 'potatoes', 'celery', 'oranges', 'avocado', 'grapes', 'banana']
+
+      days_of_the_week[0] = 'not monday'
+      print(days_of_the_week)
+      # TypeError: 'tuple' object does not support item assignment
+
+      shopping_cart[2] = 'cheese'
+      print(shopping_cart)
+      # ['cucumbers', 'potatoes', 'cheese', 'oranges', 'avocado', 'grapes', 'banana']
+    ```
+
+-   working we tuples, we only have 2 methods available
+    -   `.count()` returns how many times the item appeared
+    -   `.index()` returns the index of the item (the first found index)
+
+<h2 id='sets'>Sets</h2>
+
+[Go Back to Summary](#summary)
+
+-   Removes all the duplicates from an "`object`"
+
+    ```Python
+      unique_set = {1, 3, 5, 4, 3, 2, 6}
+      print(unique_set)
+      # {1, 2, 3, 4, 5, 6}
+    ```
+
+-   `.difference()` returns the difference (who is calling)
+
+    ```Python
+      my_set = {1, 2, 3, 4, 5}
+      your_set = {4, 5, 6, 7, 8, 9, 10}
+
+      print(my_set.difference(your_set))
+      # {1, 2, 3}
+    ```
+
+-   `.discard()` removes an item from the set
+
+    ```Python
+      my_set = {1, 2, 3, 4, 5}
+
+      my_set.discard(5)
+      print(my_set)
+      # {1, 2, 3, 4}
+    ```
+
+-   `.difference_update()` returns the difference (who is calling) and modifies the original set
+
+    ```Python
+      my_set = {1, 2, 3, 4, 5}
+      your_set = {4, 5, 6, 7, 8, 9, 10}
+
+      my_set.difference_update(your_set)
+      print(my_set)
+      # {1, 2, 3}
+    ```
+
+-   `.intersection()` or `&` returns the intersection between two sets
+
+    ```Python
+      my_set = {1, 2, 3, 4, 5}
+      your_set = {4, 5, 6, 7, 8, 9, 10}
+
+      # alternative 1
+      my_set.intersection(your_set)
+      print(my_set)
+      # {4, 5}
+
+      # alternative 2
+      print(my_set & your_set)
+      # {4, 5}
+    ```
+
+-   `.isdisjoint()` returns `true/false` where `true` means that the two sets don't have items in common
+
+    ```Python
+      my_set2 = {1, 2, 3, 4, 5}
+      your_set2 = {6, 7, 8, 9, 10}
+
+      print(my_set2.isdisjoint(your_set2))
+      # True
+    ```
+
+-   `.union()` or `|` concatenate two sets and remove duplicates
+
+    ```Python
+      my_set = {1, 2, 3, 4, 5}
+      your_set = {4, 5, 6, 7, 8, 9, 10}
+
+      print(my_set.union(your_set))
+      # {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    ```
+
+-   `.issubset()` checks if the left part (who is calling) is a **subset** of the other set, returns `true/false`
+
+    ```Python
+      my_set3 = {4, 5}
+      your_set3 = {4, 5, 6, 7, 8, 9, 10}
+
+      print(my_set3.issubset(your_set3))
+      # True
+    ```
+
+-   `.issuperset()` checks if the left part (who is calling) is a **superset** of the other set, returns `true/false`
+
+    ```Python
+      my_set3 = {4, 5}
+      your_set3 = {4, 5, 6, 7, 8, 9, 10}
+
+      print(your_set3.issuperset(my_set3))
+      # True
     ```
