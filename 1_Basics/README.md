@@ -17,6 +17,11 @@
     -   [Dictionary](#dictionary)
     -   [Tuples](#tuples)
     -   [Sets](#sets)
+    -   [Ternary Operator](#ternaryoperator)
+    -   [== vs is](#equalis)
+    -   [Iterables](#iterables)
+    -   [Enumerate](#enumerate)
+    -   [While/Else](#whileelse)
     -   [xxxxxxx](#xxxxxxxx)
 
 <h1 id='basics'>Basics</h1>
@@ -595,4 +600,139 @@
 
       print(your_set3.issuperset(my_set3))
       # True
+    ```
+
+<h2 id='ternaryoperator'>Ternary Operator</h2>
+
+[Go Back to Summary](#summary)
+
+-   [Ternary Operator - Official Docs](https://book.pythontips.com/en/latest/ternary_operators.html)
+-   Ternary operators are more commonly known as conditional expressions in Python. These operators evaluate something based on a condition being true or not. They became a part of Python in version 2.4
+
+    ```Python
+      value_if_true if condition else value_if_false
+    ```
+
+    ```Python
+      is_nice = True
+
+      state = "nice" if is_nice else "not nice"
+      print(state)
+      # nice
+    ```
+
+<h2 id='equalis'>== vs is</h2>
+
+[Go Back to Summary](#summary)
+
+-   `==` checks for equality value
+-   `is` checks for memory location
+
+    ```Python
+      print(True == True)
+      print('1' == '1')
+      print([] == [])
+      print(10 == 10)
+      print([1,2,3] == [1,2,3])
+      # True
+      # True
+      # True
+      # True
+      # True
+
+      print()
+      print(True is True)
+      print('1' is '1')
+      print([] is [])
+      print(10 is 10)
+      print([1,2,3] is [1,2,3])
+      # True
+      # True
+      # False
+      # True
+      # False
+    ```
+
+<h2 id='iterables'>Iterables</h2>
+
+[Go Back to Summary](#summary)
+
+-   We can iterate through a `list/dictionary/tuples/sets/string` and use a shorthand to get the `key/value`
+
+    ```Python
+      user = {
+        'name': 'Roger',
+        'age': 33,
+        'can_swim': False
+      }
+
+      for key, value in user.items():
+        print(key, value)
+      print()
+      for value in user.values():
+        print(value)
+      print()
+      for key in user.keys():
+        print(key)
+    ```
+
+<h3 id='range'>Range</h3>
+
+[Go Back to Summary](#summary)
+
+-   We can use `range()` that creates a special kind of object that we can iterate
+-   `range(start, stop, step)`
+
+    -   by default the step is not specified is `1`
+
+    ```Python
+      for number in range(0,100):
+        print(number)
+    ```
+
+<h3 id='enumerate'>Enumerate</h3>
+
+[Go Back to Summary](#summary)
+
+-   Using enumerate, it gives us accesses to the index for the `list/dictionary/tuples/sets/string`
+
+```Python
+  for index, value in enumerate('Helllloooooo'):
+    print(index, value)
+```
+
+<h2 id='whileelse'>While/Else</h2>
+
+[Go Back to Summary](#summary)
+
+-   We can use `else` condition with `while`. The `else` part will be only executed if the `while` loop executed successfully
+
+    ```Python
+      i = 0
+      while i < 10:
+        print (i)
+        i += 1;
+        break
+      else:
+        print('This msg will never be printed')
+
+      # 0
+
+      j = 0
+      while j < 10:
+        print (j)
+        j += 1;
+      else:
+        print('This msg will be printed after 9')
+      # 0
+      # 1
+      # 2
+      # 3
+      # 4
+      # 5
+      # 6
+      # 7
+      # 8
+      # 9
+      # This msg will be printed after 9
     ```
