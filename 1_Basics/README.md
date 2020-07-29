@@ -22,7 +22,11 @@
     -   [Iterables](#iterables)
     -   [Enumerate](#enumerate)
     -   [While/Else](#whileelse)
-    -   [xxxxxxx](#xxxxxxxx)
+    -   [Functions](#functions)
+        -   [Keyword Arguments vs Positional Arguments](#keywordvspositional)
+        -   [Default Parameters](#defaultparameters)
+        -   [Docstrings](#docstrings)
+        -   [*args *kwargs](#argskwargs)
 
 <h1 id='basics'>Basics</h1>
 
@@ -736,3 +740,91 @@
       # 9
       # This msg will be printed after 9
     ```
+
+<h2 id='functions'>Functions</h2>
+
+[Go Back to Summary](#summary)
+
+```Python
+  msg = 'Welcome home'
+  def say_greetings(name, emoji):
+    print(f'{msg}, {name} {emoji}')
+
+  say_greetings('Roger', '👍🏻')
+```
+
+<h3 id='keywordvspositional'>Keyword Arguments vs Positional Arguments</h3>
+
+[Go Back to Summary](#summary)
+
+-   With `keywords` we don't need to pass the parameters in order as it appears
+
+    ```Python
+      msg = 'Welcome home'
+      def say_greetings(name, emoji):
+        print(f'{msg}, {name} {emoji}')
+
+      say_greetings(emoji = '👍🏻', name = 'Roger')
+    ```
+
+<h3 id='defaultparameters'>Default Parameters</h3>
+
+[Go Back to Summary](#summary)
+
+-   We can assign default parameters if none is given
+
+    ```Python
+      msg = 'Welcome home'
+      def say_greetings(name = 'Guest', emoji = '😎'):
+        print(f'{msg}, {name} {emoji}')
+
+      say_greetings()
+    ```
+
+<h3 id='docstrings'>Docstrings</h3>
+
+[Go Back to Summary](#summary)
+
+-   `Docstrings` is a way to add extra info / definitions to our function
+
+    ```Python
+      def extra_info_function(a):
+        '''
+        Info: this function prints param a
+        '''
+        print(a)
+
+      extra_info_function('!!!!')
+    ```
+
+-   an alternative, we can use `help()` to know more about the function, we just need to point to the function, ot execute the function (`()`)
+
+    ```Python
+      help(extra_info_function)
+    ```
+
+-   we could also use `Dunder` or `Magic Methods`
+
+    -   Dunder or magic methods in Python are the methods having two prefix and suffix underscores in the method name. Dunder here means “Double Under (Underscores)”. These are commonly used for operator overloading. Few examples for magic methods are: **init**, **add**, **len**, **repr** etc.
+    -   Python lets our classes inherit from built-in classes. An inheriting child class of a built-in shares all the same attributes, including methods as the built-in. We can take advantage of core built-in functionality, but customize selected operations through the use of magic methods.
+
+    ```Python
+      print(extra_info_function.__doc__)
+    ```
+
+<h3 id='argskwargs'>*args *kwargs</h3>
+
+[Go Back to Summary](#summary)
+
+-   **Rule**: `params`, `*args`, `default parameters`, `**kwargs`
+
+```Python
+  def super_func(*args, **kwargs):
+    total = 0
+    for items in kwargs.values():
+      total += items
+    return sum(args) + total
+
+  print(super_func(1,2,3,4,5, num1 = 5, num2 = 10))
+  # 30
+```
