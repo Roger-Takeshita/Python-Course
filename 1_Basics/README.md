@@ -27,6 +27,7 @@
         -   [Default Parameters](#defaultparameters)
         -   [Docstrings](#docstrings)
         -   [*args *kwargs](#argskwargs)
+        -   [Anonymous Function](#anonymousfunction)
 
 <h1 id='basics'>Basics</h1>
 
@@ -745,13 +746,17 @@
 
 [Go Back to Summary](#summary)
 
-```Python
-  msg = 'Welcome home'
-  def say_greetings(name, emoji):
-    print(f'{msg}, {name} {emoji}')
+-   **Function expressions do not exist in Python**
 
-  say_greetings('Roger', '👍🏻')
-```
+    -   Every function in Python is defined using the **def** keyword and **are never assigned to variables** as in JavaScript.
+
+    ```Python
+      msg = 'Welcome home'
+      def say_greetings(name, emoji):
+        print(f'{msg}, {name} {emoji}')
+
+      say_greetings('Roger', '👍🏻')
+    ```
 
 <h3 id='keywordvspositional'>Keyword Arguments vs Positional Arguments</h3>
 
@@ -828,3 +833,28 @@
   print(super_func(1,2,3,4,5, num1 = 5, num2 = 10))
   # 30
 ```
+
+<h3 id='anonymousfunction'>Anonymous Function</h3>
+
+[Go Back to Summary](#summary)
+
+-   [More about Anonymous Function](https://realpython.com/python-lambda/)
+-   Python has a different sort of anonymous functions
+-   Python does have a the concept of **anonymous functions** but they are called **lambda functions**.
+
+Think of **lambda functions** as a JavaScript arrow function that implicitly returns a single expression's result.
+
+    ```Python
+      nums = [1, 3, 2, 6, 5]
+      odds = list( filter(lambda num: num % 2, nums) )
+
+      print(odds)
+      #[1, 3, 5]
+    ```
+
+    ```Python
+      double = lambda x: x * 2
+
+      print(double(5))
+      # 10
+    ```
