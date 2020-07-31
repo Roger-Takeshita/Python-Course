@@ -11,7 +11,14 @@
         -   [Inheritance](#inheritance)
         -   [isinstance()](#isinstance)
         -   [super()](#super)
-    -   [xxxxxxxx](#xxxxxxx)
+    -   [Functional Programming](#functionalprogramming)
+        -   [Pure Function](#purefunction)
+        -   [map()](#map)
+        -   [reduce()](#reduce)
+        -   [Lambada Expressions](#lambdaexpression)
+    -   [List Comprehensions](#listcomprehensions)
+        -   [Dictionary Comprehension](#dictionarycomprehension)
+    -   [xxxxxxxx](#xxxxxxxxxxx)
 
 <h1 id='advanced'>Advanced</h1>
 
@@ -289,3 +296,179 @@
       print('The storage is:', Apple.storage)
       print('The model is:', Apple.model)
     ```
+
+<h2 id='functionalprogramming'>Functional Programming</h2>
+
+[Go Back to Summary](#summary)
+
+-   What is function programming:
+    -   Clear + Understandable
+    -   Easy to Extend
+    -   Easy to Maintain
+    -   Memory Efficient
+    -   Dry
+
+<h3 id='purefunction'>Pure Function</h3>
+
+[Go Back to Summary](#summary)
+
+-   Pure functions rules:
+    -   Given the same input, the function always return us the same output
+    -   The function should not produce side effects
+        -   For example:
+            -   should not have a `print()` inside this function
+            -   should not modify an outside variable
+
+<h3 id='map'>map()</h3>
+
+[Go Back to Summary](#summary)
+
+-   Make an iterator that computes the function using arguments from each of the iterables. Stops when the shortest iterable is exhausted.
+
+    ```Python
+      array = [1, 2, 3]
+
+      def multiply_by2(array):
+          return array*2
+
+      print('new list =', list(map(multiply_by2, array)))
+      print('original list =', array)
+      # new list = [2, 4, 6]
+      # original list = [1, 2, 3]
+    ```
+
+    -   In this case we had to convert into a list, otherwise, python will only print the memory location
+    -   Notice that we don't need to execute the function `()`, we just have to point to the function and `map()` will take care for us
+    -   Just like in JavaScript, `map()` creates a new list (array in JS) and doesn't affect the original list (array)
+
+<h3 id='filter'>filer()</h3>
+
+[Go Back to Summary](#summary)
+
+-   The filter returns a new list (array) filtered by the condition. If the condition is equal to `True` then the filter will keep the item.
+-   Just like in JavaScript, `filter()` creates a new list (array in JS) and doesn't effect the original list (array)
+
+    ```Python
+      array = [1, 2, 3, 4, 5]
+
+      def check_odd(array):
+          return array % 2 != 0
+
+      print('new list =', list(filter(check_odd, array)))
+      print('original list =', array)
+      # new list = [1, 3, 5]
+      # original list = [1, 2, 3, 4, 5]
+    ```
+
+<h3 id='zip'>zip()</h3>
+
+[Go Back to Summary](#summary)
+
+-   The `zip()` function returns a zip object, which is an iterator of tuples where the first item in each passed iterator is paired together, and then the second item in each passed iterator are paired together etc.
+-   If the passed iterators have different lengths, the iterator with the least items decides the length of the new iterator.
+
+    ```Python
+      my_list = [1, 2, 3]
+      your_list = ["a", "b", "c", "d"]
+      their_list = ["I", "II", "III", "IV"]
+
+      print(list(zip(my_list, your_list, their_list)))
+      # [(1, 'a', 'I'), (2, 'b', 'II'), (3, 'c', 'III')]
+    ```
+
+<h3 id='reduce'>reduce()</h3>
+
+[Go Back to Summary](#summary)
+
+-   Reduce doesn't come with Python by default, we have to import form `functools`
+-   Python’s `reduce()` is a function that implements a mathematical technique called folding or reduction. `reduce()` is useful when you need to apply a function to an iterable and reduce it to a single cumulative value.
+
+    ```Python
+      from functools import reduce
+      my_list = [1, 2, 3]
+
+      def sum_list(accumulator, array):
+          return accumulator + array
+
+      print(reduce(sum_list, my_list, 0))
+      # 6
+    ```
+
+<h3 id='lambdaexpression'>Lambada Expressions</h3>
+
+[Go Back to Summary](#summary)
+
+-   How lambda expression works
+
+    ```Python
+      lambda param: action(param)
+    ```
+
+    ```Python
+      my_list = [1, 2, 3]
+      def multiply_by2(item):
+          return item * 2
+
+      print(list(map(multiply_by2,my_list)))
+      # [2, 4, 6]
+      print(list(map(lambda item: item*2, my_list)))
+      # [2, 4, 6]
+    ```
+
+    ```Python
+      from functools import reduce
+
+      my_list = [1, 2, 3]
+
+      print(reduce(lambda acc, item: acc+item, my_list))
+      # 6
+    ```
+
+<h2 id='listcomprehensions'>List Comprehensions</h2>
+
+[Go Back to Summary](#summary)
+
+-   how it works
+-   Variable = **[** new_variable/expression **for** use_this_variable **in** string **]**
+
+    ```Python
+      my_list = [char for char in 'hello'];
+      print(my_list)
+
+      my_list2 = [num for num in range(0, 100)]
+      print(my_list2)
+
+      my_list3 = [num*2 for num in range(0, 100)]
+      print(my_list3)
+
+      my_list4 = [num*2 for num in range(0, 100) if num % 2 == 0]
+      print(my_list4)
+    ```
+
+<h3 id='dictionarycomprehension'>Dictionary Comprehension</h3>
+
+[Go Back to Summary](#summary)
+
+```Python
+  simple_dict = {
+      'a': 1,
+      'b': 2
+  }
+
+  my_dict = {key: value ** 2 for key, value in simple_dict.items()}
+  print(my_dict)
+  # {'a': 1, 'b': 4}
+
+  my_dict2 = {key: value ** 2 for key, value in simple_dict.items() if value % 2 == 0}
+  print(my_dict
+  # {'b': 4}
+
+  my_dict3 = {num: num*2 for num in [1, 2, 3]}
+  print(my_dict3)
+  # {1: 2, 2: 4, 3: 6}
+
+  some_list = ['a', 'b', 'c', 'b', 'd', 'm', 'n', 'n']
+  my_dict = list(set([item for item in some_list if some_list.count(item) > 1]))
+  print(my_dict)
+  # ['n', 'b']
+```
