@@ -1,11 +1,16 @@
 <h1 id='summary'>Summary</h1>
 
--   [Image Processing](#imageprocessing)
+-   [PIL - Image Processing](#imageprocessing)
     -   [Installation](#installpil)
     -   [PIL Basics](#pilbasics)
     -   [Image Converter (jpg to png](#imageconverter)
+-   [PyPDF2 - PDF](#pypdf2)
+    -   [Installation](#installpydf2)
+    -   [PDF Basics](#pdfbasics)
+    -   [Merge/Combine PDFs](#mergepdf)
+    -   [Watermaker PDF](#watermakerpdf)
 
-<h1 id='imageprocessing'>Image Processing</h1>
+<h1 id='imageprocessing'>PIL - Image Processing</h1>
 
 [Go Back to Summary](#summary)
 
@@ -39,39 +44,39 @@
 
       #! Blur
       filtered_img = img.filter(ImageFilter.BLUR)
-      filtered_img.save('./converted/yumi_blur.png', 'png')
+      filtered_img.save('./images/converted/yumi_blur.png', 'png')
 
       #! Smooth
       filtered_img2 = img.filter(ImageFilter.SMOOTH)
-      filtered_img2.save('./converted/yumi_smooth.png', 'png')
+      filtered_img2.save('./images/converted/yumi_smooth.png', 'png')
 
       #! Sharpen
       filtered_img3 = img.filter(ImageFilter.SHARPEN)
-      filtered_img3.save('./converted/yumi_sharpen.png', 'png')
+      filtered_img3.save('./images/converted/yumi_sharpen.png', 'png')
 
       #! Grey Scale
       filtered_img4 = img.convert('L') # 'L' = grey scale
-      filtered_img4.save('./converted/yumi_grey_scale.png', 'png')
+      filtered_img4.save('./images/converted/yumi_grey_scale.png', 'png')
 
       #! Show Image
       # filtered_img4.show()
 
       #! Rotate
       rotated_img = filtered_img4.rotate(75)
-      rotated_img.save('./converted/yumi_rotated.png', 'png')
+      rotated_img.save('./images/converted/yumi_rotated.png', 'png')
 
       #! Resize
       resized_img = img.resize((300, 300))
-      resized_img.save('./converted/yumi_300x300.png', 'png')
+      resized_img.save('./images/converted/yumi_300x300.png', 'png')
 
       #! Crop
       box = (100, 100, 400, 400)
       cropped_img = img.crop(box)
-      cropped_img.save('./converted/yumi_cropped.png', 'png')
+      cropped_img.save('./images/converted/yumi_cropped.png', 'png')
 
       #! Thumbnail
       img.thumbnail((150 ,150))
-      img.save('./converted/yumi_thumbnail.png')
+      img.save('./images/converted/yumi_thumbnail.png')
     ```
 
 <h2 id='imageconverter'>Image Converter (jpg to png)</h2>
@@ -83,7 +88,7 @@
     -   [os - Official Docs](https://docs.python.org/3/library/os.html)
     -   [pathlib - Official Docs](https://docs.python.org/3/library/pathlib.html)
 -   To use run the code we need to give the images_folder and the destination folder, like so:
--   `python3 image_converter.py images_jpg/ images_png/`
+-   `python3 image_converter.py images/images_jpg/ images/images_png/`
 
     ```Python
       import sys
@@ -102,4 +107,191 @@
           img = Image.open(f'{images_folder}{filename}')
           clean_name = os.path.splitext(filename)
           img.save(f'{destination_folder}{clean_name[0]}.png', 'png')
+    ```
+
+<h1 id='pypdf2'>PyPDF2 - PDF</h1>
+
+[Go Back to Summary](#summary)
+
+-   To work with PDFs we are going to use `PyPDF2`
+-   [PyPDF2 - Official Docs](https://pythonhosted.org/PyPDF2/)
+
+<h2 id='installpydf2'>Installation</h2>
+
+[Go Back to Summary](#summary)
+
+-   Install `PyDF2`
+
+    ```Bash
+      pip3 install PyPDF2
+    ```
+
+<h2 id='pdfbasics'>PDF Basics</h2>
+
+[Go Back to Summary](#summary)
+
+-   `PdfFileReader(my_file)` - Read the PDF in binary format
+    -   `rb` - Ready Binary
+-   `.numPages`
+-   `.getPage(0)` - Get the first page
+-   `.rotateClockwise()` - Rotate a page, first we need to get page, then we can rotate
+-   `.rotateCounterClockwise()` - Rotate a page, first we need to get page, then we can rotate
+-   `.PdfFileWriter()` - Writer
+-   `.addPage()` - Adds a new page
+-   `.write()` - Save the modified file
+-   `.PdfFileMerger()` - Combine multiple pdfs
+
+    ```Python
+      import PyPDF2
+      import os
+      output_folder = './pdf/converted/'
+
+      with open('./pdf/dummy.pdf', 'rb') as my_file:
+          #! Read the binary file
+          reader = PyPDF2.PdfFileReader(my_file)
+
+          #! Select the name
+          filename = os.path.splitext(os.path.basename(my_file.name))
+
+          #! Rotate a page
+          selected_page = reader.getPage(0)
+          selected_page.rotateClockwise(180)
+
+          #! Print the number of pages
+          print(reader.numPages)
+
+          #! Save (write) a new file
+          #+ first we instantiate the .PdfFileWriter()
+          #+ create the file in mode 'wb' (write binary)
+          writer = PyPDF2.PdfFileWriter()
+          #+ write to the pdf
+          writer.addPage(selected_page)
+
+          #+ check if folder exists, if not create one
+          if not os.path.exists(output_folder):
+              os.makedirs(output_folder)
+
+          #+ save the file
+          with open(f'{output_folder}{filename[0]}_converted.pdf', 'wb') as converted_file:
+              writer.write(converted_file)
+    ```
+
+<h2 id='mergepdf'>Merge/Combine PDFs</h2>
+
+[Go Back to Summary](#summary)
+
+-   Similar to write a PDF (`.PdfFileWriter()`) we have the merger (`PdfFileMerger()`)
+
+    ```Bash
+      python3 pdf_combiner.py pdf/dummy.pdf pdf/twopage.pdf pdf/wtr.pdf
+    ```
+
+    ```Python
+      import os
+      import sys
+      import PyPDF2
+
+      files = sys.argv[1:]
+
+      def pdf_combiner(files):
+          output_path = './pdf/merged_pdfs/'
+
+          if not os.path.exists(output_path):
+              os.makedirs(output_path)
+
+          merger = PyPDF2.PdfFileMerger()
+
+          for file in files:
+              merger.append(file)
+
+          merger.write(f'{output_path}combined_pdf.pdf')
+
+      pdf_combiner(files)
+    ```
+
+<h2 id='watermakerpdf'>Watermaker PDF</h2>
+
+[Go Back to Summary](#summary)
+
+-   Watermaker PDF, where the first argument is the watermark then the rest are the files
+
+    ```Bash
+      python3 pdf_watermaker.py pdf/wtr.pdf pdf/dummy.pdf pdf/twopage.pdf
+    ```
+
+    ```Python
+      import os
+      import sys
+      import PyPDF2
+
+      watermark = sys.argv[1]
+      files = sys.argv[2:]
+      output_dir = './pdf/watermarked_pdf/'
+
+      def pdf_watermarker(watermark, files):
+          if not os.path.exists(output_dir):
+              os.makedirs(output_dir)
+
+          with open(watermark, 'rb') as watermark_file:
+              converted_watermark_file = PyPDF2.PdfFileReader(watermark_file)
+              watermark_page = converted_watermark_file.getPage(0)
+
+              for file in files:
+                  with open(file, 'rb') as single_file:
+                      count = 1
+                      writer = PyPDF2.PdfFileWriter()
+                      read_single_file = PyPDF2.PdfFileReader(single_file)
+                      for page in range(read_single_file.numPages):
+                          new_page = read_single_file.getPage(page)
+                          new_page.mergePage(watermark_page)
+                          writer.addPage(new_page)
+
+                      while (True):
+                          output_filename = f'{output_dir}merged_file_{count}.pdf'
+                          if not os.path.exists(output_filename):
+                              with open(output_filename, 'wb') as new_file:
+                                  writer.write(new_file)
+                              break
+                          else:
+                              count += 1
+
+      pdf_watermarker(watermark, files)
+    ```
+
+-   Little refactoring:
+
+    ```Python
+      import os
+      import sys
+      import PyPDF2
+
+      watermark = sys.argv[1]
+      files = sys.argv[2:]
+      output_dir = './pdf/watermarked_pdf/'
+
+      def pdf_watermarker(watermark, files):
+          if not os.path.exists(output_dir):
+              os.makedirs(output_dir)
+
+          converted_watermark_file = PyPDF2.PdfFileReader(open(watermark, 'rb'))
+          watermark_page = converted_watermark_file.getPage(0)
+
+          for file in files:
+              count = 1
+              writer = PyPDF2.PdfFileWriter()
+              read_single_file = PyPDF2.PdfFileReader(open(file, 'rb'))
+              for page in range(read_single_file.numPages):
+                  new_page = read_single_file.getPage(page)
+                  new_page.mergePage(watermark_page)
+                  writer.addPage(new_page)
+
+              while (True):
+                  output_filename = f'{output_dir}merged_file_{count}.pdf'
+                  if not os.path.exists(output_filename):
+                      writer.write(open(output_filename, 'wb'))
+                      break
+                  else:
+                      count += 1
+
+      pdf_watermarker(watermark, files)
     ```
