@@ -13,6 +13,8 @@
     -   [SMTP Protocol](#smtpprotocol)
     -   [Using smtplib](#usingsmtplib)
         -   [String Template](#stringtemplate)
+-   [hashlib - Hash Password](#hashlib)
+    -   [Password Checker](#passwordchecker)
 
 <h1 id='imageprocessing'>PIL - Image Processing</h1>
 
@@ -431,4 +433,66 @@
           smtp.login('your_email@gmail.com', 'your_password')
           smtp.send_message(email)
           print('message sent')
+    ```
+
+<h1 id='hashlib'>hashlib - Hash Password</h1>
+
+[Go Back to Summary](#summary)
+
+-   Python has a built-in library called `hashlib` that helps us to hash our password
+-   [hashlib - Official Docs](https://docs.python.org/3/library/hashlib.html)
+
+<h2 id='passwordchecker'>Password Checker</h2>
+
+[Go Back to Summary](#summary)
+
+-   Checks if our password has been leaked
+-   [Hash Generator](https://passwordsgenerator.net/md5-hash-generator/)
+-   `hashlib.sha1(password.encode('utf-8')).hexdigest().upper()`
+
+    -   basically we get our `password` and then encode as `utf-8` (we must provide an encode), then we convert into hexadecimal digits, and then covert everything to uppercase
+
+-   now we can get the first 5 character and the rest of the password (tail)
+    -   `first5_char, tail = sha1password[:5], sha1password[5:]`
+-   Then we send a quest to the api to return the of leaked passwords,
+-   After that we check if there is any hash equal to our hashed password
+
+    ```Python
+      import requests
+      import hashlib
+      import sys
+
+      def request_api_data(query_data):
+          url = 'https://api.pwnedpasswords.com/range/' + query_data
+          res = requests.get(url)
+
+          if res.status_code != 200:
+              raise RuntimeError(f'Error fetching {res.status_code}. check the api again')
+
+          return res
+
+      def get_password_leaks_count(hashes, my_hashed_pass):
+          hashes = (line.split(':') for line in hashes.text.splitlines())
+
+          for hash, count in hashes:
+              if hash == my_hashed_pass:
+                  return count
+          return 0
+
+      def pwned_api_check(password):
+          sha1password = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+          first5_char, tail = sha1password[:5], sha1password[5:]
+          response = request_api_data(first5_char)
+          return get_password_leaks_count(response, tail)
+
+      def main(passwords):
+          for password in passwords:
+              count = pwned_api_check(password)
+              if count:
+                  print(f'{password} was fount {count} times... you should change your password')
+              else:
+                  print(f'{password} was NOT found')
+          return 'done!'
+
+      main(sys.argv[1:])
     ```
