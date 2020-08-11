@@ -9,6 +9,10 @@
     -   [PDF Basics](#pdfbasics)
     -   [Merge/Combine PDFs](#mergepdf)
     -   [Watermaker PDF](#watermakerpdf)
+-   [smtplib - Email](#email)
+    -   [SMTP Protocol](#smtpprotocol)
+    -   [Using smtplib](#usingsmtplib)
+        -   [String Template](#stringtemplate)
 
 <h1 id='imageprocessing'>PIL - Image Processing</h1>
 
@@ -294,4 +298,137 @@
                       count += 1
 
       pdf_watermarker(watermark, files)
+    ```
+
+<h1 id='email'>smtplib - Email</h1>
+
+[Go Back to Summary](#summary)
+
+-   Python has a built-in email module called `smtplib`
+-   [smtplib - Official Docs](https://docs.python.org/3/library/email.examples.html)
+
+<h2 id='smtpprotocol'>SMTP Protocol</h2>
+
+[Go Back to Summary](#summary)
+
+-   **SMTP**, or **Simple Mail Transfer Protocol**, is a set of communication guidelines used by email servers to deliver emails to their clients. Your emails are just strings of text; **SMTP** helps servers and email clients categorize and organize the information you send. When you send an email, the sender, recipients, email body and title heading are separated into sections. **SMTP** separates the sections using code words.
+
+-   **SMTP Usage**
+    **SMTP** is used to send emails, so it only works for outgoing emails. To be able to send emails, you need to provide the correct SMTP server when you set up your email client. Unlike POP3 and IMAP, SMTP can't be used to retrieve and store emails. **SMTP** is also responsible for setting up communication between servers. The first server identifies itself and transmits the type of operation it will perform. The email is sent only after the second server authorizes the operation. SMTP is simple and reliable, but not very secure. Because it is text-based, **SMTP** is vulnerable to spoofing.
+
+<h2 id='usingsmtplib'>Using smtplib</h2>
+
+[Go Back to Summary](#summary)
+
+-   Import the the library and `EmailMessage`
+
+    ```Python
+      import stmtplib
+      from email.message import EmailMessage
+    ```
+
+-   Then create a new email object using `EmailMessage()`
+
+    -   Add, who is this email from?
+        -   `email['from'] = 'Your Name'`
+    -   Add, who are we sending the email to
+        -   `email['to'] = 'user_email@gmail.com'`
+    -   Add the email's subject line
+        -   `email['subject'] = 'It\'s your lucky day Yumi'`
+    -   Add the content
+        -   `email.set_content('Hi Yumi, you just won $1.000 and 2x bones')`
+
+-   After setting up the the email object content, we need to send the email
+
+    ```Python
+      with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
+          # ehlo, this is a part of the protocol of the smtp
+          smtp.ehlo()
+          # starts the encryption protocol
+          smtp.starttls()
+          # login to gmail acc with your credentials
+          stmp.login('your_email@gmail.com', 'your_password')
+          # send the email that we just created
+          smtp.send_message(email)
+          print('message sent')
+    ```
+
+    ```Python
+      import smtplib
+      from email.message import EmailMessage
+
+      email = EmailMessage()
+      email['From'] = 'Your Name'
+      email['To'] = 'user_email@gmail.com'
+      email['Subject'] = 'It\'s your lucky day Yumi'
+      email.set_content('Hi Yumi, you just won $1.000 and 2x bones')
+
+      with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
+          # ehlo, this is a part of the protocol of the smtp
+          smtp.ehlo()
+          # starts the encryption protocol
+          smtp.starttls()
+          # login to gmail acc with your credentials
+          smtp.login('your_email@gmail.com', 'your_password')
+          # send the email that we just created
+          smtp.send_message(email)
+          print('message sent')
+    ```
+
+-   **ATTENTION** the name of the file has to be anything different from `email.py`
+
+<h3 id='stringtemplate'>String Template</h3>
+
+[Go Back to Summary](#summary)
+
+-   `String Template` is a a built-in class (`class string.Template(template)`), just like template literals
+    -   [string.Template - Official Docs](https://docs.python.org/3/library/string.html)
+-   In this case we are going to read the `html` file, then we are going to substitute the variable `$name`
+    -   to access the `html` file, we are going to use `pathlib`, we could also use `os`
+    -   [pathlib vs os](https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/)
+-   Then instead of sending a fixed text, we can substitute the `$name` with a dynamic name
+    -   `html.substitute(name='Yumi')` or `html.substitute({'name': name})`
+    -   the `email.set_content()` has a second parameter, that we can specify the format
+        -   we can set the email content to be `html`, so the email will be formatted as `html`
+
+*   in `email_send.html`
+
+    -   Let's create a base `html` file
+
+    ```HTML
+      <!DOCTYPE html>
+      <html lang="en">
+
+      <head>
+      </head>
+
+      <body>
+          $name just won 1.000,00 CAD and 2x bones
+      </body>
+
+      </html>
+    ```
+
+*   in `email_send.py`
+
+    ```Python
+      import smtplib
+      from email.message import EmailMessage
+      from string import Template
+      from pathlib import Path
+
+      name = 'Yumi'
+      html = Template(Path('email_send.html').read_text())
+      email = EmailMessage()
+      email['From'] = 'Your Name'
+      email['To'] = 'user_email@gmail.com'
+      email['Subject'] = f'It\'s your lucky day {name}'
+      email.set_content(html.substitute({'name': name}), 'html')
+
+      with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
+          smtp.ehlo()
+          smtp.starttls()
+          smtp.login('your_email@gmail.com', 'your_password')
+          smtp.send_message(email)
+          print('message sent')
     ```
