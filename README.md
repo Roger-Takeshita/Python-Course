@@ -3949,19 +3949,19 @@
 
 - **button/link/image:**
 
-      ```Python
-        click()
-        get_attribute()
-        is_displayed()
-        is_enabled()
-      ```
+  ```Python
+    click()
+    get_attribute()
+    is_displayed()
+    is_enabled()
+  ```
 
 - **Text field:**
 
-      ```Python
-        send_keys()
-        clear()
-      ```
+  ```Python
+    send_keys()
+    clear()
+  ```
 
 - **Checkbox/Radio:**
 
