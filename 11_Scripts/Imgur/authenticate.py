@@ -2,12 +2,16 @@
 #! Developed by Roger Takeshita
 #! https://github.com/Roger-Takeshita
 
-import configparser
+from configparser import ConfigParser
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
+import os.path
+import inspect
 
-config = configparser.ConfigParser()
-config.read('auth.ini')
+filename = inspect.getframeinfo(inspect.currentframe()).filename
+path = os.path.dirname(os.path.abspath(filename))
+config = ConfigParser()
+config.read(f'{path}/auth.ini')
 
 
 def authenticate_user():

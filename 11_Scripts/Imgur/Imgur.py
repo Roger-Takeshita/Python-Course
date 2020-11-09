@@ -5,12 +5,16 @@
 from authenticate import authenticate_user
 from time import strftime, localtime
 from imgurpython.helpers.error import ImgurClientError
-import configparser
+from configparser import ConfigParser
 import pyperclip
+import os.path
+import inspect
 import sys
 
-config = configparser.ConfigParser()
-config.read('auth.ini')
+filename = inspect.getframeinfo(inspect.currentframe()).filename
+path = os.path.dirname(os.path.abspath(filename))
+config = ConfigParser()
+config.read(f'{path}/auth.ini')
 album = config.get('album', 'ALBUM_ID') or None
 image_path = sys.argv[1]
 
