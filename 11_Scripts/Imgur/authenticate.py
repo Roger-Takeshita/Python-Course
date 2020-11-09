@@ -2,15 +2,15 @@
 #! Developed by Roger Takeshita
 #! https://github.com/Roger-Takeshita
 
-from configparser import ConfigParser
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
+import configparser
 import os.path
 import inspect
 
 filename = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(filename))
-config = ConfigParser()
+config = configparser.ConfigParser()
 config.read(f'{path}/auth.ini')
 
 
@@ -19,9 +19,10 @@ def authenticate_user():
         pin = config.get('credentials', 'PIN')
         client_id = config.get('credentials', 'CLIENT_ID')
         client_secret = config.get('credentials', 'CLIENT_SECRET')
-        client = ImgurClient(client_id, client_secret)
         access_token = config.get('credentials', 'ACCESS_TOKEN')
         refresh_token = config.get('credentials', 'REFRESH_TOKEN')
+        album = config.get('album', 'ALBUM_ID') or None
+        client = ImgurClient(client_id, client_secret)
 
         if refresh_token == '':
             try:
@@ -37,7 +38,10 @@ def authenticate_user():
                     f'Please visit {authorization_url} to generate a new pin.')
         else:
             client.set_user_auth(access_token, refresh_token)
-            return client
+            return {
+                "client": client,
+                "album": album
+            }
 
     except configparser.NoOptionError:
         raise ValueError('ERROR: CLIENT_ID/CLIENT_SECRET not found.')
