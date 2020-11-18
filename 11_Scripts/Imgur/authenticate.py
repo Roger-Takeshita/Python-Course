@@ -13,6 +13,13 @@ path = os.path.dirname(os.path.abspath(filename))
 config = configparser.ConfigParser()
 config.read(f'{path}/auth.ini')
 
+class colors:
+    default='\033[39m'
+    red='\033[31m'
+    green='\033[32m'
+    blue='\033[34m'
+    orange='\033[38;5;202m'
+
 
 def authenticate_user():
     try:
@@ -29,13 +36,13 @@ def authenticate_user():
                 credentials = client.authorize(pin, 'pin')
                 access = credentials['access_token']
                 refresh = credentials['refresh_token']
-                raise ValueError(
-                    f'ACCESS_TOKEN={access} REFRESH_TOKEN={refresh}')
+                raise Warning(
+                    f'{colors.blue}ACCESS_TOKEN={colors.default}{access} {colors.blue}REFRESH_TOKEN={colors.default}{refresh}')
             except ImgurClientError as error:
-                print(f'ERROR: Invalid pin {pin}')
+                print(f'{colors.red}ERROR:{colors.default} Invalid pin {colors.orange}{pin}{colors.default}')
                 authorization_url = client.get_auth_url('pin')
-                raise ValueError(
-                    f'Please visit {authorization_url} to generate a new pin.')
+                raise Warning(
+                    f'Please visit {colors.blue}{authorization_url}{colors.default} to generate a new pin.')
         else:
             client.set_user_auth(access_token, refresh_token)
             return {
@@ -44,10 +51,10 @@ def authenticate_user():
             }
 
     except configparser.NoOptionError:
-        raise ValueError('ERROR: CLIENT_ID/CLIENT_SECRET not found.')
+        raise ValueError(f'{colors.red}ERROR:{colors.blue} CLIENT_ID{colors.default}/{colors.blue}CLIENT_SECRET{colors.default} not found.')
 
     except configparser.NoSectionError:
-        raise ValueError('ERROR: auth.ini not found.')
+        raise ValueError(f'{colors.red}ERROR:{colors.orange} auth.ini{colors.default} not found.')
 
     except TypeError as error:
         raise ValueError(error)

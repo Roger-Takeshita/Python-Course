@@ -2,13 +2,17 @@
 #! Developed by Roger Takeshita
 #! https://github.com/Roger-Takeshita
 
-from authenticate import authenticate_user
+from authenticate import authenticate_user, colors
 from time import strftime, localtime
 from imgurpython.helpers.error import ImgurClientError
 import pyperclip
 import sys
 
-image_path = sys.argv[1]
+try:
+    image_path = sys.argv[1]
+except IndexError as error:
+    print(f'{colors.red}ERROR:{colors.default} Please provide an image first.')
+    exit()
 
 
 def upload_image(data):
@@ -20,10 +24,10 @@ def upload_image(data):
         'title': 'Dev_{0}'.format(timestamp),
         'description': 'Image generated: {0}'.format(timestamp)
     }
-    print('Uploading image...')
+    print(f'{colors.orange}Uploading image...{colors.default}')
     image = data["client"].upload_from_path(
         image_path, config=config, anon=False)
-    print('Done')
+    print(f'{colors.green}Done!{colors.default}')
     return image
 
 
@@ -31,7 +35,13 @@ if __name__ == "__main__":
     try:
         data = authenticate_user()
         image = upload_image(data)
-        pyperclip.copy(image['link'])
-        print(image['link'])
+        link = image['link']
+        pyperclip.copy(link)
+        print(f'{colors.blue}{link}{colors.default}')
     except (ImgurClientError, ValueError) as error:
-        print(error)
+        if error == '(403) Invalid client_id ':
+            print(f'{colors.red}ERROR:{colors.blue} CLIENT_ID{colors.default}')
+        else:
+            print(f'{colors.red}ERROR:{colors.default} {error}')
+    except Warning as warning:
+        print(warning)
