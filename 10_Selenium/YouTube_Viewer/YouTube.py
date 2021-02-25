@@ -9,7 +9,9 @@ from selenium import webdriver
 
 views = 10  # Number of time to play the video
 wait = 0   # wait = 0, the script will wait the video length before reloading the page
-video_array = ["ofMKdOFjZ0w", "ofMKdOFjZ0w"]  # video_id
+hide_browser = False  # True/False (First letter capitalized)
+video_array = ['ofMKdOFjZ0w', 'ofMKdOFjZ0w']  # video_id
+
 
 driver_path = '/Users/roger-that/Documents/Roger-That/Dev/2-Drivers/Selenium_Drivers/chromedriver'
 filename = inspect.getframeinfo(inspect.currentframe()).filename
@@ -20,26 +22,29 @@ api_key = config.get('credentials', 'GOOGLE_API_KEY')
 
 
 def get_video_length(video_id, api_key):
-    searchUrl = f'https://www.googleapis.com/youtube/v3/videos?id={video_id}&key={api_key}&part=contentDetails&part=snippet'
-    response = urllib.request.urlopen(searchUrl).read()
-    data = json.loads(response)
-    all_data = data['items']
-    video_title = all_data[0]['snippet']['title']
-    contentDetails = all_data[0]['contentDetails']
-    duration = contentDetails['duration'][2:]
+    try:
+        searchUrl = f'https://www.googleapis.com/youtube/v3/videos?id={video_id}&key={api_key}&part=contentDetails&part=snippet'
+        response = urllib.request.urlopen(searchUrl).read()
+        data = json.loads(response)
+        all_data = data['items']
+        video_title = all_data[0]['snippet']['title']
+        contentDetails = all_data[0]['contentDetails']
+        duration = contentDetails['duration'][2:]
 
-    if re.search('H', duration):
-        match = re.findall(r"(\d+)H(\d+)M(\d+)S", duration)
-        seconds = int(match[0][0])*3600 + \
-            int(match[0][1])*60 + int(match[0][2])
-    elif re.search('M', duration):
-        match = re.findall(r"(\d+)M(\d+)S", duration)
-        seconds = int(match[0][0])*60 + int(match[0][1])
-    else:
-        match = re.findall(r"(\d+)S", duration)
-        seconds = int(match[0])
+        if re.search('H', duration):
+            match = re.findall(r"(\d+)H(\d+)M(\d+)S", duration)
+            seconds = int(match[0][0])*3600 + \
+                int(match[0][1])*60 + int(match[0][2])
+        elif re.search('M', duration):
+            match = re.findall(r"(\d+)M(\d+)S", duration)
+            seconds = int(match[0][0])*60 + int(match[0][1])
+        else:
+            match = re.findall(r"(\d+)S", duration)
+            seconds = int(match[0])
 
-    return {'seconds': seconds, 'duration': duration, 'title': video_title}
+        return {'seconds': seconds, 'duration': duration, 'title': video_title}
+    except:
+        print('Something went wrong with your YouTube API request')
 
 
 def run_viewer(video_id, views, google_chrome):
@@ -59,10 +64,18 @@ def run_viewer(video_id, views, google_chrome):
 
 def init():
     for video_id in video_array:
-        print('Loading browser...')
-        google_chrome = webdriver.Chrome(driver_path)
+        if hide_browser:
+            print('Loading browser in the background')
+            options = webdriver.ChromeOptions()
+            options.add_argument('headless')
+            google_chrome = webdriver.Chrome(driver_path, options=options)
+        else:
+            google_chrome = webdriver.Chrome(driver_path)
+
         google_chrome.get(f'https://www.youtube.com/watch?v={video_id}')
-        time.sleep(10)
+        for i in range(1, 11):
+            print(f'Loading Browser... {i}s')
+            time.sleep(1)
         google_chrome.refresh()
         run_viewer(video_id, views, google_chrome)
         google_chrome.close()
