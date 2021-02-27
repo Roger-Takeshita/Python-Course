@@ -9,11 +9,12 @@ from selenium import webdriver
 
 views = 10  # Number of time to play the video
 wait = 0   # wait = 0, the script will wait the video length before reloading the page
-hide_browser = False  # True/False (First letter capitalized)
-video_array = ['ofMKdOFjZ0w', 'ofMKdOFjZ0w']  # video_id
-
-
+speed = 1  # 1-16, 1 = normal playback
+muted = 'true'  # true/false - type string (all lowercase)
+hide_browser = True  # True/False - type boolean (Title case)
+video_array = ['ofMKdOFjZ0w']  # video_id
 driver_path = '/Users/roger-that/Documents/Roger-That/Dev/2-Drivers/Selenium_Drivers/chromedriver'
+
 filename = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(filename))
 config = configparser.ConfigParser()
@@ -53,13 +54,21 @@ def run_viewer(video_id, views, google_chrome):
     video_title = video_obj['title']
     video_duration = video_obj['duration'].replace(
         'H', ':').replace('M', ':').replace('S', '')
+
     print(
-        f'Title: {video_title} - {video_duration} ({video_length_seconds}s)')
+        f'Title: {video_title} - {video_duration} ({video_length_seconds}s) - Speed: {speed}x')
 
     for i in range(views):
         print(f'View count: {i+1} of {views}')
-        time.sleep(wait if wait else video_length_seconds)
+        time.sleep(wait if wait/speed else video_length_seconds/speed)
+        playbackRateEl = f'document.getElementsByTagName("video")[0].playbackRate = {speed};'
+        playEl = f'document.getElementsByTagName("video")[0].play();'
+        mutedEl = f'document.getElementsByTagName("video")[0].muted = {muted};'
+        google_chrome.execute_script(playEl)
+        google_chrome.execute_script(playbackRateEl)
+        google_chrome.execute_script(mutedEl)
         google_chrome.refresh()
+        time.sleep(3)
 
 
 def init():
@@ -73,10 +82,21 @@ def init():
             google_chrome = webdriver.Chrome(driver_path)
 
         google_chrome.get(f'https://www.youtube.com/watch?v={video_id}')
+
         for i in range(1, 11):
             print(f'Loading Browser... {i}s')
             time.sleep(1)
+
         google_chrome.refresh()
+        time.sleep(3)
+
+        playbackRateEl = f'document.getElementsByTagName("video")[0].playbackRate = {speed};'
+        playEl = f'document.getElementsByTagName("video")[0].play();'
+        mutedEl = f'document.getElementsByTagName("video")[0].muted = {muted};'
+        google_chrome.execute_script(playEl)
+        google_chrome.execute_script(playbackRateEl)
+        google_chrome.execute_script(mutedEl)
+
         run_viewer(video_id, views, google_chrome)
         google_chrome.close()
         time.sleep(1)
