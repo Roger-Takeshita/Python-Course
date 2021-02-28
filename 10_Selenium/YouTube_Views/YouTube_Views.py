@@ -10,8 +10,8 @@ from selenium import webdriver
 views = 10  # Number of time to play the video
 wait = 0   # wait = 0, the script will wait the video length before reloading the page
 speed = 1  # 1-16, 1 = normal playback
-muted = 'true'  # true/false - type string (all lowercase)
-hide_browser = True  # True/False - type boolean (Title case)
+mute = 'true'  # true/false - type string (all lowercase)
+hide_browser = False  # True/False - type boolean (Title case)
 video_array = ['ofMKdOFjZ0w']  # video_id
 driver_path = '/Users/roger-that/Documents/Roger-That/Dev/2-Drivers/Selenium_Drivers/chromedriver'
 
@@ -34,11 +34,11 @@ def get_video_length(video_id, api_key):
 
         if re.search('H', duration):
             match = re.findall(r"(\d+)H(\d+)M(\d+)S", duration)
-            seconds = int(match[0][0])*3600 + \
-                int(match[0][1])*60 + int(match[0][2])
+            seconds = int(match[0][0]) * 3600 + \
+                int(match[0][1]) * 60 + int(match[0][2])
         elif re.search('M', duration):
             match = re.findall(r"(\d+)M(\d+)S", duration)
-            seconds = int(match[0][0])*60 + int(match[0][1])
+            seconds = int(match[0][0]) * 60 + int(match[0][1])
         else:
             match = re.findall(r"(\d+)S", duration)
             seconds = int(match[0])
@@ -60,15 +60,15 @@ def run_viewer(video_id, views, google_chrome):
 
     for i in range(views):
         print(f'View count: {i+1} of {views}')
-        time.sleep(wait if wait/speed else video_length_seconds/speed)
-        playbackRateEl = f'document.getElementsByTagName("video")[0].playbackRate = {speed};'
-        playEl = f'document.getElementsByTagName("video")[0].play();'
-        mutedEl = f'document.getElementsByTagName("video")[0].muted = {muted};'
-        google_chrome.execute_script(playEl)
-        google_chrome.execute_script(playbackRateEl)
-        google_chrome.execute_script(mutedEl)
+        time.sleep(wait if wait / speed else video_length_seconds / speed)
         google_chrome.refresh()
         time.sleep(3)
+        playbackRateEl = f'document.getElementsByTagName("video")[0].playbackRate = {speed};'
+        playEl = 'document.getElementsByTagName("video")[0].play();'
+        muteEl = f'document.getElementsByTagName("video")[0].muted = {mute};'
+        google_chrome.execute_script(playEl)
+        google_chrome.execute_script(playbackRateEl)
+        google_chrome.execute_script(muteEl)
 
 
 def init():
@@ -91,8 +91,8 @@ def init():
         time.sleep(3)
 
         playbackRateEl = f'document.getElementsByTagName("video")[0].playbackRate = {speed};'
-        playEl = f'document.getElementsByTagName("video")[0].play();'
-        mutedEl = f'document.getElementsByTagName("video")[0].muted = {muted};'
+        playEl = 'document.getElementsByTagName("video")[0].play();'
+        mutedEl = f'document.getElementsByTagName("video")[0].muted = {mute};'
         google_chrome.execute_script(playEl)
         google_chrome.execute_script(playbackRateEl)
         google_chrome.execute_script(mutedEl)
