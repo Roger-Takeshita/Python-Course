@@ -24,9 +24,16 @@ class format:
     RST = '\u001b[0m'
 
 
-def printStatus(project, build_number, phase,
-                status, start_time, end_time):
-    print(f'  {colors.BL}{project}{colors.RST}')
+def printStatus(build):
+    project_name = build['projectName']
+    start_time = build['startTime']
+    start_time = build['startTime']
+    end_time = build['endTime']
+    build_number = build['buildNumber']
+    phase = build['currentPhase']
+    status = build['buildStatus']
+
+    print(f'  {colors.BL}{project_name}{colors.RST}')
     print()
     print(f'     Attempt:    {colors.BL}{build_number}{colors.RST}')
     print(f'     Start Time: {colors.BL}{start_time}{colors.RST}')
@@ -90,23 +97,10 @@ def getBuildStatus(profile):
     if profile['last_build'] == '-a' or profile['last_build'] == '--all':
         for project in projects_array:
             build = builds[project]
-            start_time = build['startTime']
-            end_time = build['endTime']
-            build_number = build['buildNumber']
-            phase = build['currentPhase']
-            status = build['buildStatus']
-            printStatus(project, build_number, phase,
-                        status, start_time, end_time)
+            printStatus(build)
     else:
         build = builds[projects_array[0]]
-        project = build['projectName']
-        start_time = build['startTime']
-        end_time = build['endTime']
-        build_number = build['buildNumber']
-        phase = build['currentPhase']
-        status = build['buildStatus']
-        printStatus(project, build_number, phase,
-                    status, start_time, end_time)
+        printStatus(build)
 
 
 def getStatus(profile):
@@ -115,12 +109,12 @@ def getStatus(profile):
     except botocore.exceptions.ParamValidationError:
         print()
         print(
-            f"     {colors.BGOG}{colors.WT} WARNING: {colors.RST} The config profile ({colors.BL}{profile}{colors.RST}) doesn't have builds.")
+            f"     {colors.BGOG}{colors.WT} WARNING: {colors.RST} The config profile ({colors.BL}{profile['profile_name']}{colors.RST}) doesn't have builds.")
         print()
     except botocore.exceptions.ProfileNotFound:
         print()
         print(
-            f"     {colors.BGRD}{colors.WT} ERROR: {colors.RST} The config profile ({colors.BL}{profile}{colors.RST}) could not be found.")
+            f"     {colors.BGRD}{colors.WT} ERROR: {colors.RST} The config profile ({colors.BL}{profile['profile_name']}{colors.RST}) could not be found.")
         print()
 
 
